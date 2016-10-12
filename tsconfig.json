@@ -25,6 +25,11 @@
         "src/documentModel.ts",
         "src/utils.ts",
         "src/app.tsx",
+        "src/BreadCrumb.tsx",
+        "src/BreadCrumbItem.tsx",
+        "src/Menu.tsx",
+        "src/MenuItem.tsx",
+        "src/DocumentList.tsx",
         "src/DocumentListItem.tsx"
     ],
     "exclude": []

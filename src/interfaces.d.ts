@@ -1,22 +1,16 @@
+interface IBreadCrumbItem {
+  updating? : boolean;
+}
+
 interface IDocument {
-  id: string,
-  title: string,
-  completed: boolean
-}
-
-interface ITodoItemProps {
-  key : string,
-  todo : IDocument;
-}
-
-interface ITodoItemState {
-  editText : string
+  id: string;
+  title: string;
 }
 
 interface IDocumentModel {
-  key : any;
+  id : any;
   documents : Array<IDocument>;
-  menuItems : Array<IMenuItem>
+  menuItems : Array<IMenuItem>;
   onChanges : Array<any>;
   subscribe(onChange);
 }
@@ -26,15 +20,69 @@ interface IMenuModel {
 }
 
 interface IMenuItem{
-  key : string,
-  title : string
+  id : string;
+  title : string;
+}
+
+interface INavigationItem{
+  id : string;
+  title : string;
 }
 
 interface IAppProps {
   model : IDocumentModel;
 }
 
-interface IAppState {
-  editing? : string;
-  nowShowing? : string
+interface IDocumentProps {
+  id : string;
+  document : IDocument;
 }
+
+interface IDocumentListProps {
+  documents : Array<IDocument>;
+}
+
+interface IDocumentListItemProps{
+  handleOnClick : any;
+  //subscribe(onClick); 
+  document : IDocument;
+}
+
+interface INavigationProps {
+  menuItems : Array<IMenuItem>;  
+}
+
+interface INavigationItemProps {
+  id : string;  
+  title : string;
+  //navigationItem : INavigationItem;
+  handleOnClick : any;
+}
+
+interface IAppState {
+  updating? : boolean;
+  currentOrganization? : string;
+  currentSpecialty? : string;
+  menuItems? : Array<IMenuItem>;
+  documents? : Array<IDocument>;
+}
+
+interface IDocumentListState {
+  updating? : boolean;
+}
+
+interface IDocumentListItemState {
+  updating? : boolean;
+}
+
+interface IBreadCrumbState {
+  updating? : boolean;
+}
+
+interface IBreadCrumbItemState {
+  updating? : boolean;
+}
+
+
+
+

@@ -110,6 +110,16 @@ gulp.task('bundle', ['through','compile', 'clean-build', 'clean-dist'], function
   ;
 });
 
+gulp.task('bundle-read', ['through','compile', 'clean-build', 'clean-dist'], function () {
+  var b = browserify(paths.output + 'app.js');
+  return b
+    .require(build.input.files.vendor_js)
+    .bundle()
+    .pipe(source('bundle.js'))
+    .pipe(gulp.dest('dist'))
+  ;
+});
+
 gulp.task('default', ['bundle', 'lint'], function () {;
 });
 

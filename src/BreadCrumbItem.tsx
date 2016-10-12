@@ -9,24 +9,20 @@
 
 import React = require('react');
 
-class DocumentListItem extends React.Component<IDocumentListItemProps, any> {
+class BreadCrumbItem extends React.Component<INavigationItemProps, any> {
 
-  constructor(props : IDocumentListItemProps){
+  constructor(props : INavigationItemProps){
     super(props);
   }
-  
-  public handleOnClick(event) {
-    var link : any = event.target;
-  }
+
 
   public render() {
     return (
-      <li>
-        <a onClick={e => this.props.handleOnClick(e)}
-        />
-      </li>
+        <div>
+            <a>{this.props.title}</a>
+        </div>        
     );
   }
 }
 
-export { DocumentListItem };
+export { BreadCrumbItem };

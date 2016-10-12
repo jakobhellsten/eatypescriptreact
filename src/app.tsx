@@ -9,17 +9,16 @@
 /// <reference path="../typings/react/react-global.d.ts" />
 /// <reference path="../typings/globals/jquery/index.d.ts" />
 
-declare var Router;
+//declare var Router;
 //Uncaught ReferenceError: Router is not defined
 
 import React = require('react');
 import jQuery = require('jquery');
-//import Superagent = require('superagent');
-//import Router = require('react-router');
 
+import { Menu } from "./Menu";
 import { DocumentModel } from "./DocumentModel";
-//import { MenuModel } from "./MenuModel";
-import { DocumentListItem } from "./DocumentListItem";
+import { DocumentList } from "./DocumentList";
+import { BreadCrumb } from "./BreadCrumb";
 import { ALL_DOCUMENTS, ACTIVE_DCOUMENTS} from "./constants";
 
 class EADocumentsApp extends React.Component<IAppProps, IAppState> {
@@ -29,8 +28,8 @@ class EADocumentsApp extends React.Component<IAppProps, IAppState> {
   constructor(props : IAppProps) {
     super(props);
     this.state = {
-      nowShowing: ALL_DOCUMENTS,
-      editing: null
+      updating: true,
+      menuItems: this.getNavNodes()
     };
   }
 
@@ -41,84 +40,90 @@ class EADocumentsApp extends React.Component<IAppProps, IAppState> {
           .get(endpoint)//, {search: searchParams})
           .map(res => res.json().main)
           .subscribe(res => console.log('weather json response = ' + JSON.stringify(res))
-          );*/
+          );*/ //superagent
   }
 
+  private getNavNodes()
+  {
+    let navNodes = new Array<IMenuItem>();
+    let navNode = {id:"testKey", title: "testTitle"};
+    let navNode2 = {id:"testKey2", title: "testTitle2"};
+    let navNode3 = {id:"testKey3", title: "testTitle3"};
+    navNodes.push(navNode);
+    navNodes.push(navNode2);
+    navNodes.push(navNode3);
+
+    return navNodes;
+  }
+
+  private getSpecialties()
+  {
+      var specialties = {
+        "parentId": "00000000-0000-0000-0000-000000000000",
+        "id": "301b0941-a3c9-4e5a-9c84-9591a4739356",
+        "title": "Ämnesområde",
+        "isTermInUse": true,
+        "hasUsedChildNodes": true,
+        "children": [
+          {
+            "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",
+            "id": "62014f30-6a14-4ab6-bbf9-241db6023f14",
+            "title": "Administration",
+            "isTermInUse": false,
+            "hasUsedChildNodes": true,
+            "children": [],
+            "self": "http://localhost:12008/specialties/62014f30-6a14-4ab6-bbf9-241db6023f14"
+          },
+          {
+            "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",
+            "id": "616af728-369f-4059-a408-9ee549d9d37e",
+            "title": "MeSH",
+            "isTermInUse": false,
+            "hasUsedChildNodes": true,
+            "children": [],
+            "self": "http://localhost:12008/specialties/616af728-369f-4059-a408-9ee549d9d37e"
+          }
+        ],
+        "self": "http://localhost:12008"
+      }
+
+      return specialties;
+  }
 
 
   public componentDidMount() {
     console.log('did mount');
-    var setState = this.setState;
-    /*var router = Router({
-      '/': setState.bind(this, {nowShowing: ALL_DOCUMENTS}),
-      '/active': setState.bind(this, {nowShowing: ACTIVE_DCOUMENTS}),
-    });
-    router.init('/');*/
-    this.getDocuments(null);
+    var items = this.getNavNodes();
+    console.log(items.length);
+    this.setState({
+        menuItems : items
+      });
+    //var setState = this.setState;
+    //this.getDocuments(null);
   }
 
   public render() {
     var main;
     console.log('in render');
-    const documents = this.props.model.documents;
-
-    /*var shownDocuments = documents.filter((todo) => {
-      switch (this.state.nowShowing) {
-      case ACTIVE_DCOUMENTS:
-        return !todo.completed;
-      default:
-        return true;
-      }
-    });*/
-
-    var documentItems = null;
-    /*var documentItems = shownDocuments.map((todo) => {
-      return (
-        <DocumentListItem
-          key={todo.id}
-          todo={todo}
-        />
-      );
-    });*/
-
-    // Note: It's usually better to use immutable data structures since they're
-    // easier to reason about and React works very well with them. That's why
-    // we use map(), filter() and reduce() everywhere instead of mutating the
-    // array or todo items themselves.
-    /*var activeTodoCount = documents.reduce(function (accum, todo) {
-      return todo.completed ? accum : accum + 1;
-    }, 0);*/
-
-    //var completedCount = documents.length - activeTodoCount;
-    var activeTodoCount = 0;
+    console.log(this.state.menuItems);
+    var menu = <Menu menuItems={this.state.menuItems} />;
 
     //if (documents.length) {
-      main = (
+      /*main = (
         <section className="main">
-          <input
-            className="toggle-all"
-            type="checkbox"
-            checked={activeTodoCount === 0}
-          />
           <ul className="document-list">
             {documentItems}
           </ul>
         </section>
-      );
-    //}
+      );*/
 
     return (
       <div>
         <header className="header">
           <h1>Dokument per ämnesområde</h1>
-          <input
-            ref="newField"
-            className="new-todo"
-            placeholder="What needs to be done?"
-            autoFocus={true}
-          />
         </header>
-        {main}
+        //{main}
+        {menu}
       </div>
     );
   }

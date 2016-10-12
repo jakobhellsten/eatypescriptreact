@@ -1,8 +1,8 @@
 "use strict";
 var utils_1 = require("./utils");
 var DocumentModel = (function () {
-    function DocumentModel(key) {
-        this.key = key;
+    function DocumentModel(id) {
+        this.id = id;
         this.documents = null;
         this.onChanges = [];
     }
@@ -10,14 +10,13 @@ var DocumentModel = (function () {
         this.onChanges.push(onChange);
     };
     DocumentModel.prototype.inform = function () {
-        utils_1.Utils.store(this.key, this.documents);
+        utils_1.Utils.store(this.id, this.documents);
         this.onChanges.forEach(function (cb) { cb(); });
     };
-    DocumentModel.prototype.addTodo = function (title) {
+    DocumentModel.prototype.addDocument = function (title) {
         this.documents = this.documents.concat({
             id: utils_1.Utils.uuid(),
             title: title,
-            completed: false
         });
         this.inform();
     };
@@ -31,7 +30,7 @@ var DocumentModel = (function () {
         this.documents = this.documents.map(function (document) {
             return document !== documentToggle ?
                 document :
-                utils_1.Utils.extend({}, document, { completed: !document.completed });
+                utils_1.Utils.extend({}, document, { completed: !document.title });
         });
         this.inform();
     };

@@ -15,13 +15,13 @@ import { Utils } from "./utils";
 // separate out parts of your application.
 class DocumentModel implements IDocumentModel {
 
-  public key : string;
+  public id : string;
   public documents : Array<IDocument>;
   public menuItems : Array<IMenuItem>
   public onChanges : Array<any>;
 
-  constructor(key) {
-    this.key = key;
+  constructor(id) {
+    this.id = id;
     this.documents = null; //Utils.store(key);
     this.onChanges = [];
   }
@@ -31,15 +31,14 @@ class DocumentModel implements IDocumentModel {
   }
 
   public inform() {
-    Utils.store(this.key, this.documents);
+    Utils.store(this.id, this.documents);
     this.onChanges.forEach(function (cb) { cb(); });
   }
 
-  public addTodo(title : string) {
+  public addDocument(title : string) {
     this.documents = this.documents.concat({
       id: Utils.uuid(),
       title: title,
-      completed: false
     });
 
     this.inform();
@@ -61,7 +60,7 @@ class DocumentModel implements IDocumentModel {
     this.documents = this.documents.map<IDocument>((document : IDocument) => {
       return document !== documentToggle ?
         document :
-        Utils.extend({}, document, {completed: !document.completed});
+        Utils.extend({}, document, {completed: !document.title});
     });
 
     this.inform();

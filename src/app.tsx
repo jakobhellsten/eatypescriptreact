@@ -102,11 +102,19 @@ class EADocumentsApp extends React.Component<IAppProps, IAppState> {
     //this.getDocuments(null);
   }
 
+      public handleMenuClick(event){
+        var link : any = event.target;
+        console.log('Bubble for menu in app!')
+        console.log(link);
+        console.log(event);
+    }
+
   public render() {
     var main;
     console.log('in render');
     console.log(this.state.menuItems);
-    var menu = <Menu menuItems={this.state.menuItems} />;
+    var menuClick = this.handleMenuClick.bind(this);
+    var menu = <Menu handleOnClick={menuClick} menuItems={this.state.menuItems} />;
 
     //if (documents.length) {
       /*main = (

@@ -26,6 +26,7 @@ class Menu extends React.Component<INavigationProps, any> {
         console.log('Bubble in menu!')
         console.log(link);
         console.log(event);
+        this.props.handleOnClick(event);
     }
 
 

@@ -49,7 +49,8 @@ interface IDocumentListItemProps{
 }
 
 interface INavigationProps {
-  menuItems : Array<IMenuItem>;  
+  menuItems : Array<IMenuItem>;
+  handleOnClick : any;  
 }
 
 interface INavigationItemProps {

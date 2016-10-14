@@ -43,6 +43,7 @@ interface IDocumentListProps {
 }
 
 interface IDocumentListItemProps{
+  key : string;
   handleOnClick : any;
   //subscribe(onClick); 
   document : IDocument;
@@ -54,7 +55,7 @@ interface INavigationProps {
 }
 
 interface INavigationItemProps {
-  id : string;  
+  key : string;  
   title : string;
   //navigationItem : INavigationItem;
   handleOnClick : any;

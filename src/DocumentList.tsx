@@ -64,7 +64,7 @@ class DocumentList extends React.Component<IDocumentListProps, IDocumentListStat
               {this.props.documents.map(function(item, i){
                 var boundClick = this.handleListItemClick.bind(this, i);
                 return (
-                  <DocumentListItem handleOnClick={boundClick} document={item} />
+                  <DocumentListItem handleOnClick={boundClick} document={item} key={item.id} />
                 )
               })}
             </ul>

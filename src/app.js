@@ -70,11 +70,18 @@ var EADocumentsApp = (function (_super) {
             menuItems: items
         });
     };
+    EADocumentsApp.prototype.handleMenuClick = function (event) {
+        var link = event.target;
+        console.log('Bubble for menu in app!');
+        console.log(link);
+        console.log(event);
+    };
     EADocumentsApp.prototype.render = function () {
         var main;
         console.log('in render');
         console.log(this.state.menuItems);
-        var menu = React.createElement(Menu_1.Menu, {menuItems: this.state.menuItems});
+        var menuClick = this.handleMenuClick.bind(this);
+        var menu = React.createElement(Menu_1.Menu, {handleOnClick: menuClick, menuItems: this.state.menuItems});
         return (React.createElement("div", null, 
             React.createElement("header", {className: "header"}, 
                 React.createElement("h1", null, "Dokument per ämnesområde")

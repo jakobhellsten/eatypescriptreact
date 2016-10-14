@@ -14,16 +14,16 @@ var Menu = (function (_super) {
     Menu.prototype.handleMenuItemClick = function (event) {
         var link = event.target;
         console.log('Bubble in menu!');
-        console.log(link.id);
+        console.log(link);
+        console.log(event);
+        this.props.handleOnClick(event);
     };
     Menu.prototype.render = function () {
         return (React.createElement("div", null, 
-            React.createElement("ul", null, 
-                this.props.menuItems.map(function (item) {
-                    var _this = this;
-                    return (React.createElement(MenuItem_1.MenuItem, {handleOnClick: function (e) { return _this.handleMenuItemClick.bind(_this); }, id: item.id, title: item.title}));
-                }), 
-                ".bind(this)")
+            React.createElement("ul", null, this.props.menuItems.map(function (item) {
+                var boundClick = this.handleMenuItemClick.bind(this);
+                return (React.createElement(MenuItem_1.MenuItem, {handleOnClick: boundClick, key: item.id, title: item.title}));
+            }.bind(this)))
         ));
     };
     return Menu;

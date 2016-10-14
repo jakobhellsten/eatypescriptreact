@@ -20,7 +20,7 @@ var DocumentList = (function (_super) {
         return (React.createElement("div", null, 
             React.createElement("ul", null, this.props.documents.map(function (item, i) {
                 var boundClick = this.handleListItemClick.bind(this, i);
-                return (React.createElement(DocumentListItem_1.DocumentListItem, {handleOnClick: boundClick, document: item}));
+                return (React.createElement(DocumentListItem_1.DocumentListItem, {handleOnClick: boundClick, document: item, key: item.id}));
             }))
         ));
     };

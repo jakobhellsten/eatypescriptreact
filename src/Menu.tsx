@@ -32,8 +32,6 @@ class Menu extends React.Component<INavigationProps, any> {
 
     public render() {
 
-        //var menuItem = <MenuItem id="testId" title="TestTitle" />;
-
         return (
                 <div>
                     <ul>
@@ -41,7 +39,7 @@ class Menu extends React.Component<INavigationProps, any> {
                             var boundClick = this.handleMenuItemClick.bind(this);
                             //e => this.handleMenuItemClick(this)
                             return (
-                                <MenuItem handleOnClick={boundClick} id={item.id} title={item.title} />
+                                <MenuItem handleOnClick={boundClick} key={item.id} title={item.title} />
                             )
                         }.bind(this))}
                     </ul>

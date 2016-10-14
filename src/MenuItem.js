@@ -21,7 +21,7 @@ var MenuItem = (function (_super) {
             React.createElement("div", null, 
                 "In the menuitem", 
                 this.props.title, 
-                React.createElement("a", {onClick: function (e) { return _this.props.handleOnClick(_this); }}, this.props.title))
+                React.createElement("a", {onClick: function (e) { return _this.props.handleOnClick(_this.props.key); }}, this.props.title))
         ));
     };
     return MenuItem;

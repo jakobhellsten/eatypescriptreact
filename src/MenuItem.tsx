@@ -15,7 +15,7 @@ class MenuItem extends React.Component<INavigationItemProps, any> {
     }
 
     public handleOnClick(event) {
-        var input : any = event.target;
+        var element : any = event.target;
         console.log('handle on click in MenuItem')
     }
 
@@ -25,7 +25,7 @@ class MenuItem extends React.Component<INavigationItemProps, any> {
                 <div>
                     In the menuitem   
                     {this.props.title}   
-                    <a onClick={e => this.props.handleOnClick(this.props.id)}>{this.props.title}</a>
+                    <a onClick={e => this.props.handleOnClick(this.props.key)}>{this.props.title}</a>
                 </div>
             </li>
         );

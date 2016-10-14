@@ -64,7 +64,7 @@ class BreadCrumb extends React.Component<INavigationProps, IBreadCrumbState> {
               {this.props.menuItems.map(function(item, i){
                 var boundClick = this.handleBreadCrumbItemClick.bind(this, i);
                 return (
-                  <BreadCrumbItem id="{item.id}" title="{item.title}" handleOnClick={boundClick} />
+                  <BreadCrumbItem key="{item.id}" title="{item.title}" handleOnClick={boundClick} />
                 )
               })}
             </ul>

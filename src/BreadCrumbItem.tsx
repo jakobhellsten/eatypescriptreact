@@ -15,12 +15,13 @@ class BreadCrumbItem extends React.Component<INavigationItemProps, any> {
     super(props);
   }
 
-
   public render() {
     return (
-        <div>
-            <a>{this.props.title}</a>
-        </div>        
+            <li>
+                <div>
+                    <a onClick={e => this.props.handleOnClick(this.props.id)}>key = {this.props.key}, id = {this.props.id} title = {this.props.title}</a>
+                </div>
+            </li>      
     );
   }
 }

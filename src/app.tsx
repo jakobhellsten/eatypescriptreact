@@ -7,42 +7,228 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="./interfaces.d.ts"/>
 /// <reference path="../typings/react/react-global.d.ts" />
+/// <reference path="../typings/modules/react-dom/index.d.ts" />
+/// <reference path="../typings/globals/react-modal/index.d.ts" />
+/// <reference path="../typings/globals/axios/index.d.ts" />
 /// <reference path="../typings/globals/jquery/index.d.ts" />
 
 //declare var Router;
 //Uncaught ReferenceError: Router is not defined
 
 import React = require('react');
-import jQuery = require('jquery');
+import ReactDom = require('react-dom');
+import axios = require('axios');
 
 import { Menu } from "./Menu";
 import { DocumentModel } from "./DocumentModel";
+import { Utils } from "./Utils";
 import { DocumentList } from "./DocumentList";
 import { BreadCrumb } from "./BreadCrumb";
-import { ALL_DOCUMENTS, ACTIVE_DCOUMENTS} from "./constants";
+import { Modal } from "./Modal";
 
-class EADocumentsApp extends React.Component<IAppProps, IAppState> {
+class EAApp extends React.Component<IAppProps, IAppState> {
 
   public state : IAppState;
+  public axiosInstance;
+  readonly endpoint = 'http://rsexternalaccessapiaspnet.azurewebsites.net/'; 
 
   constructor(props : IAppProps) {
     super(props);
+
+    this.axiosInstance = axios.create({
+        baseURL: this.endpoint
+    });
+    
+    let startItems = new Array<IMenuItem>();
+    let startBreadCrumbs = new Array<IMenuItem>();
+    let startDocuments = new Array<IMenuItem>(); 
     this.state = {
+      currentSpecialty : null,
+      activeBreadCrumbs : startBreadCrumbs,
       updating: true,
-      menuItems: this.getNavNodes()
+      menuItems : startItems,
+      documents : startDocuments,
+      isModalOpen : false
     };
   }
 
-  private getDocuments(query) {
-      const endpoint = 'http://rsexternalaccessapiaspnet.azurewebsites.net/specialties';
-      return jQuery.getJSON(endpoint, cs => console.log(cs));
-      /*return this.http
-          .get(endpoint)//, {search: searchParams})
-          .map(res => res.json().main)
-          .subscribe(res => console.log('weather json response = ' + JSON.stringify(res))
-          );*/ //superagent
+  public componentDidMount() {
+    console.log('did mount');
+    let component = this;
+
+    //Get specialties with first mount
+    this.axiosInstance.get('/specialties')
+    .then(function (response) {
+      let returnType = response.data as ISpecialty;
+      let breadCrumb = returnType as IMenuItem;
+      component.setState({
+        currentSpecialty : returnType,
+        menuItems : returnType.children,
+        activeBreadCrumbs : component.state.activeBreadCrumbs.concat(breadCrumb)
+      });
+
+    })
+    .catch(function (error) {
+      console.log('Something bad happened');
+      console.log(error);
+    });  
   }
 
+  public fetchDocumentsPerSpecialty(specialtyId : string, callback : any) {
+      console.log('clicked id in fetchDocumentsPerSpecialty = ' + specialtyId);
+      let documents = new Array<IDocument>();
+      let component = this;
+      this.axiosInstance.get('/documents/search?specialtyid=' + specialtyId)
+        .then(function (response) {
+          documents = response.data as Array<IDocument>;
+          console.log(response.data)
+          console.log(documents);
+          callback(component, documents);
+        })
+        .catch(function (error) {
+          console.log('Something bad happened');
+          component.setState({
+            documents : documents
+          });
+          console.log(error);
+        }); 
+  }
+
+  public fetchDocuments(component : any, documentArray : Array<IDocument>)
+  {
+    component.setState({
+      documents : documentArray
+    });
+  }
+
+  public handleMenuClick(clickedId : string){
+      console.log('Bubble for menu in app!')
+      let component = this;
+      
+      if(clickedId != null)
+      {
+        this.axiosInstance.get('/specialties/' + clickedId)
+        .then(function (response) {
+          let returnType = response.data as ISpecialty;
+          let menuItem = returnType as IMenuItem;
+          let handleDocuments = component.fetchDocuments.bind(this);
+          component.fetchDocumentsPerSpecialty(clickedId, handleDocuments);
+          component.setState({
+            currentSpecialty : returnType,
+            activeBreadCrumbs : component.state.activeBreadCrumbs.concat(menuItem),
+            menuItems : returnType.children,
+          });
+        })
+        .catch(function (error) {
+          console.log('Something bad happened');
+          console.log(error);
+        });  
+      }
+      else
+      {
+        console.log('clickedId is null or empty');
+      }
+
+    console.log(clickedId);
+  }
+
+  public handleBreadCrumbClick(clickedId : string){
+      console.log('Bubble for breadcrumb in app!')
+      let component = this;
+      let handleDocuments = this.fetchDocuments.bind(this);
+
+      if(clickedId != null)
+      {
+        this.axiosInstance.get('/specialties/' + clickedId)
+        .then(function (response) {
+          let returnType = response.data as ISpecialty;
+          let breadCrumb = returnType as IMenuItem;
+          let breadCrumbItems = component.state.activeBreadCrumbs;
+          component.fetchDocumentsPerSpecialty(clickedId, handleDocuments);
+          if(breadCrumbItems.filter(x => x.id == clickedId).length > 0)
+          {
+            let index = breadCrumbItems.indexOf(breadCrumbItems.filter(x => x.id == clickedId)[0])
+            breadCrumbItems.length = index + 1; //change length of breadCrumbs
+          }
+          component.setState({
+            currentSpecialty : returnType,
+            menuItems : returnType.children,
+            activeBreadCrumbs : breadCrumbItems,
+          });
+        })
+        .catch(function (error) {
+          console.log('Something bad happened');
+          console.log(error);
+        });  
+      }
+      else
+      {
+        console.log('clickedId is null or empty');
+      }
+
+    console.log(clickedId);
+  }
+
+  public openModal(){
+    console.log('Open modal');
+    this.setState({isModalOpen: true});      
+  }
+ 
+  public closeModal() {
+    this.setState({isModalOpen: false});
+    console.log('Close modal');
+  }
+
+  public handleListItemModalProperties(item : IDocument){
+    console.log('In handleListItemModalProperties');
+    console.log(item);
+    this.setState({isModalOpen: true});
+  }
+
+  public render() {
+    var main;
+    var menuClick = this.handleMenuClick.bind(this);
+    var breadcrumbClick = this.handleBreadCrumbClick.bind(this);
+    var menu = <Menu handleOnClick={menuClick} menuItems={this.state.menuItems} currentSpecialty={this.state.currentSpecialty} />;
+    var modalCloseClick = this.closeModal.bind(this);    
+    var modal = <Modal isOpen={this.state.isModalOpen} handleOnClose={modalCloseClick} />;
+    var handleModalOpenClick = this.handleListItemModalProperties.bind(this);
+    var documentList = <DocumentList documents={this.state.documents} handleDocumentProperties={handleModalOpenClick} />;
+
+    if(this.state.currentSpecialty != null)
+    {
+      var breadCrumb = <BreadCrumb handleOnClick={breadcrumbClick} menuItems={this.state.activeBreadCrumbs} currentSpecialty={this.state.currentSpecialty}  />;
+    }    
+
+    return (
+      <div>
+        <header className="header">
+          <h1>Dokument per ämnesområde</h1>
+        </header>
+        {breadCrumb}
+        {menu}
+        {documentList}
+        {modal}
+      </div>
+    );
+  }
+}
+
+var model = new DocumentModel('react-documents');
+//var menuModel = new MenuModel('ea-menuitems');
+
+function render() {
+  React.render(
+    <EAApp model={model}/>,
+    document.getElementsByClassName('widget')[0]
+  );
+}
+
+model.subscribe(render);
+render();
+
+
+  /*
   private getNavNodes()
   {
     let navNodes = new Array<IMenuItem>();
@@ -58,7 +244,9 @@ class EADocumentsApp extends React.Component<IAppProps, IAppState> {
 
   private getSpecialties()
   {
-      var specialties = {
+      let navNodes = new Array<IMenuItem>();
+
+      let specialties = {
         "parentId": "00000000-0000-0000-0000-000000000000",
         "id": "301b0941-a3c9-4e5a-9c84-9591a4739356",
         "title": "Ämnesområde",
@@ -66,8 +254,8 @@ class EADocumentsApp extends React.Component<IAppProps, IAppState> {
         "hasUsedChildNodes": true,
         "children": [
           {
-            "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",
-            "id": "62014f30-6a14-4ab6-bbf9-241db6023f14",
+            "id": "test",
+            "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",            
             "title": "Administration",
             "isTermInUse": false,
             "hasUsedChildNodes": true,
@@ -75,8 +263,8 @@ class EADocumentsApp extends React.Component<IAppProps, IAppState> {
             "self": "http://localhost:12008/specialties/62014f30-6a14-4ab6-bbf9-241db6023f14"
           },
           {
-            "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",
             "id": "616af728-369f-4059-a408-9ee549d9d37e",
+            "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",            
             "title": "MeSH",
             "isTermInUse": false,
             "hasUsedChildNodes": true,
@@ -87,65 +275,49 @@ class EADocumentsApp extends React.Component<IAppProps, IAppState> {
         "self": "http://localhost:12008"
       }
 
-      return specialties;
-  }
+      let specialties = {
+        parentId: "00000000-0000-0000-0000-000000000000",
+        id: "301b0941-a3c9-4e5a-9c84-9591a4739356",
+        title: "Ämnesområde",
+        isTermInUse: true,
+        hasUsedChildNodes: true,
+        children: [
+          {
+            id: "test",
+            parentId: "301b0941-a3c9-4e5a-9c84-9591a4739356",            
+            title: "Administration",
+            isTermInUse: false,
+            hasUsedChildNodes: true,
+            children: [],
+            self: "http://localhost:12008/specialties/62014f30-6a14-4ab6-bbf9-241db6023f14"
+          },
+          {
+            id: "test2",
+            parentId: "301b0941-a3c9-4e5a-9c84-9591a4739356",            
+            title: "MeSH",
+            isTermInUse: false,
+            hasUsedChildNodes: true,
+            children: [],
+            self: "http://localhost:12008/specialties/616af728-369f-4059-a408-9ee549d9d37e"
+          }
+        ],
+        self: "http://localhost:12008"
+      }
 
+      let specialty = Utils.convertToSpecialty(specialties);
 
-  public componentDidMount() {
-    console.log('did mount');
-    var items = this.getNavNodes();
-    console.log(items.length);
-    this.setState({
-        menuItems : items
-      });
-    //var setState = this.setState;
-    //this.getDocuments(null);
-  }
+      for (let item in specialty.children) {
+        navNodes.push(specialty.children[item]);
+      }
 
-      public handleMenuClick(event){
-        var link : any = event.target;
-        console.log('Bubble for menu in app!')
-        console.log(link);
-        console.log(event);
-    }
+      navNodes.push(specialty);
+      console.log(specialty);
+      //navNodes.push(specialties.children);
 
-  public render() {
-    var main;
-    console.log('in render');
-    console.log(this.state.menuItems);
-    var menuClick = this.handleMenuClick.bind(this);
-    var menu = <Menu handleOnClick={menuClick} menuItems={this.state.menuItems} />;
+      //return navNodes
 
-    //if (documents.length) {
-      /*main = (
-        <section className="main">
-          <ul className="document-list">
-            {documentItems}
-          </ul>
-        </section>
-      );*/
+      var returnType = specialties as ISpecialty;
+      console.log(returnType);
 
-    return (
-      <div>
-        <header className="header">
-          <h1>Dokument per ämnesområde</h1>
-        </header>
-        //{main}
-        {menu}
-      </div>
-    );
-  }
-}
-
-var model = new DocumentModel('react-documents');
-//var menuModel = new MenuModel('ea-menuitems');
-
-function render() {
-  React.render(
-    <EADocumentsApp model={model}/>,
-    document.getElementsByClassName('widget')[0]
-  );
-}
-
-model.subscribe(render);
-render();
+      return returnType;
+  }*/

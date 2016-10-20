@@ -2,10 +2,13 @@
   "globalDependencies": {
     "axios": "registry:dt/axios#0.9.1+20160629101425",
     "jquery": "registry:dt/jquery#1.10.0+20160929162922",
+    "react-modal": "registry:dt/react-modal#1.3.0+20161010105906",
     "superagent": "registry:dt/superagent#2.0.0+20160906143408",
     "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20161004182750"
   },
   "dependencies": {
-    "debug": "registry:npm/debug#2.0.0+20160723033700"
+    "debug": "registry:npm/debug#2.0.0+20160723033700",
+    "es6-promise": "registry:common/es6-promise#4.0.0+20161003185919",
+    "react-dom": "registry:npm/react-dom#15.0.1+20160826174104"
   }
 }

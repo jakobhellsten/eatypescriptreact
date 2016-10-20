@@ -22,7 +22,7 @@ var BreadCrumb = (function (_super) {
         return (React.createElement("div", null, 
             React.createElement("ul", null, this.props.menuItems.map(function (item, i) {
                 var boundClick = this.handleBreadCrumbItemClick.bind(this, i);
-                return (React.createElement(BreadCrumbItem_1.BreadCrumbItem, {key: "{item.id}", title: "{item.title}", handleOnClick: boundClick}));
+                return (React.createElement(BreadCrumbItem_1.BreadCrumbItem, {key: item.id, id: item.id, title: item.title, handleOnClick: boundClick}));
             }))
         ));
     };

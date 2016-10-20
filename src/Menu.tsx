@@ -21,31 +21,29 @@ class Menu extends React.Component<INavigationProps, any> {
         var link : any = event.target;
     }*/
 
-    public handleMenuItemClick(event){
-        var link : any = event.target;
+    public handleMenuItemClick(clickedId){
+        //var link : any = event.target;
         console.log('Bubble in menu!')
-        console.log(link);
-        console.log(event);
-        this.props.handleOnClick(event);
+        //console.log(link);
+        console.log('event in menu' + event);
+        this.props.handleOnClick(clickedId);
     }
-
 
     public render() {
 
         return (
                 <div>
+                    Menu
                     <ul>
                         {this.props.menuItems.map(function(item){
                             var boundClick = this.handleMenuItemClick.bind(this);
-                            //e => this.handleMenuItemClick(this)
                             return (
-                                <MenuItem handleOnClick={boundClick} key={item.id} title={item.title} />
+                                <MenuItem handleOnClick={boundClick} key={item.id} id={item.id} title={item.title} />
                             )
                         }.bind(this))}
                     </ul>
                 </div> 
         );
-
     }
 }
 

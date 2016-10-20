@@ -9,8 +9,9 @@
 
 
 import React = require('react');
-
+import ReactDom = require('react-dom');
 import { DocumentListItem } from "./DocumentListItem";
+import { Modal } from "./Modal";
 
 //Stateless component
 class DocumentList extends React.Component<IDocumentListProps, IDocumentListState> {
@@ -18,7 +19,11 @@ class DocumentList extends React.Component<IDocumentListProps, IDocumentListStat
 
   constructor(props : IDocumentListProps){
     super(props);
-    //this.state = { editText: this.props.document.title };
+    this.state = {
+      isModalOpen : false
+    }
+
+    
   }
 
   /**
@@ -42,33 +47,46 @@ class DocumentList extends React.Component<IDocumentListProps, IDocumentListStat
    * For more info refer to notes at https://facebook.github.io/react/docs/component-api.html#setstate
    * and https://facebook.github.io/react/docs/component-specs.html#updating-componentdidupdate
    */
-  public componentDidUpdate(prevProps : IDocumentListProps) {
-    /*if (!prevProps.editing && this.props.editing) {
-      var node = React.findDOMNode<HTMLInputElement>(this.refs["editField"]);
-      node.focus();
-      node.setSelectionRange(node.value.length, node.value.length);
-    }*/
-  }
 
   public handleListItemClick(event) {
     var link : any = event.target;
+    console.log(link);
+    console.log('In handleListItemClick in DocumentList');
   }
 
-  public render() {
-    
-    //var documentListItem = <DocumentListItem document="test" />;
+  public openModal(){
+    this.setState({isModalOpen: true});
+  }
+ 
+  public afterOpenModal() {
+  }
+ 
+  public closeModal() {
+    this.setState({isModalOpen: false});
+  }
+
+  /*public handleListItemModalProperties(item : IDocument){
+    console.log('In handleListItemModalProperties');
+    console.log(item);
+  }*/
+
+  public render() {  
+
+    //TODO: break out logic for popup window in own control
 
     return (
         <div>
+          DocumentList
             <ul>
-              {this.props.documents.map(function(item, i){
-                var boundClick = this.handleListItemClick.bind(this, i);
+              {this.props.documents.map(function(item){
+                var boundClick = this.handleListItemClick.bind(this);
+                //var openModalClick = this.handleListItemModalProperties.bind(this);
                 return (
-                  <DocumentListItem handleOnClick={boundClick} document={item} key={item.id} />
+                  <DocumentListItem handleOnClick={boundClick} document={item} key={item.id} handleModalOpen={this.props.handleDocumentProperties} />
                 )
-              })}
-            </ul>
-        </div>        
+              }.bind(this))}
+            </ul>            
+        </div>          
     );
   }
 }

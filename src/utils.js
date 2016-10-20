@@ -25,6 +25,12 @@ var Utils = (function () {
         var store = localStorage.getItem(namespace);
         return (store && JSON.parse(store)) || [];
     };
+    Utils.convertToSpecialty = function (specialty) {
+        for (var item in specialty.children) {
+            specialty.children[item] = specialty.children[item];
+        }
+        return specialty;
+    };
     Utils.extend = function () {
         var objs = [];
         for (var _i = 0; _i < arguments.length; _i++) {

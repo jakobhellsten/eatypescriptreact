@@ -14,18 +14,16 @@ class MenuItem extends React.Component<INavigationItemProps, any> {
         super(props);
     }
 
-    public handleOnClick(event) {
+    /*public handleOnClick(event) {
         var element : any = event.target;
         console.log('handle on click in MenuItem')
-    }
+    }*/
 
     public render() {
         return (
             <li>
                 <div>
-                    In the menuitem   
-                    {this.props.title}   
-                    <a onClick={e => this.props.handleOnClick(this.props.key)}>{this.props.title}</a>
+                    <a onClick={e => this.props.handleOnClick(this.props.id)}> key={this.props.key}, id = {this.props.id} title = {this.props.title}</a>
                 </div>
             </li>
         );
@@ -39,7 +37,7 @@ export { MenuItem };
 
 
 
-      <li>
+      /*<li>
         <a onClick={e => this.props.handleOnClick(e)}
         />
-      </li>
+      </li>*/

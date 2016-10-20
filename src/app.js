@@ -6,15 +6,18 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var React = require('react');
 var jQuery = require('jquery');
+var axios = require('axios');
 var Menu_1 = require("./Menu");
 var DocumentModel_1 = require("./DocumentModel");
+var Utils_1 = require("./Utils");
 var EADocumentsApp = (function (_super) {
     __extends(EADocumentsApp, _super);
     function EADocumentsApp(props) {
         _super.call(this, props);
+        var startItems = new Array();
         this.state = {
             updating: true,
-            menuItems: this.getNavNodes()
+            menuItems: startItems
         };
     }
     EADocumentsApp.prototype.getDocuments = function (query) {
@@ -31,7 +34,34 @@ var EADocumentsApp = (function (_super) {
         navNodes.push(navNode3);
         return navNodes;
     };
-    EADocumentsApp.prototype.getSpecialties = function () {
+    EADocumentsApp.prototype.getSpecialties = function (id) {
+        var endpoint = 'http://rsexternalaccessapiaspnet.azurewebsites.net/';
+        var query = endpoint;
+        if (id !== null) {
+            query = endpoint + id;
+        }
+        var specialty;
+        var axiosInstance = axios.create({
+            baseURL: endpoint
+        });
+        axiosInstance.get('/specialties')
+            .then(function (response) {
+            console.log('In axios then');
+            specialty = response.data;
+            console.log(response);
+            console.log(response.data);
+            console.log("specialty= ");
+            console.log(specialty);
+        })
+            .catch(function (error) {
+            console.log('Something bad happened');
+            console.log(error);
+        });
+        var returnType = specialty;
+        return returnType;
+    };
+    EADocumentsApp.prototype.getSpecialtiesOld = function () {
+        var navNodes = new Array();
         var specialties = {
             "parentId": "00000000-0000-0000-0000-000000000000",
             "id": "301b0941-a3c9-4e5a-9c84-9591a4739356",
@@ -40,8 +70,8 @@ var EADocumentsApp = (function (_super) {
             "hasUsedChildNodes": true,
             "children": [
                 {
+                    "id": "test",
                     "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",
-                    "id": "62014f30-6a14-4ab6-bbf9-241db6023f14",
                     "title": "Administration",
                     "isTermInUse": false,
                     "hasUsedChildNodes": true,
@@ -49,8 +79,8 @@ var EADocumentsApp = (function (_super) {
                     "self": "http://localhost:12008/specialties/62014f30-6a14-4ab6-bbf9-241db6023f14"
                 },
                 {
-                    "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",
                     "id": "616af728-369f-4059-a408-9ee549d9d37e",
+                    "parentId": "301b0941-a3c9-4e5a-9c84-9591a4739356",
                     "title": "MeSH",
                     "isTermInUse": false,
                     "hasUsedChildNodes": true,
@@ -60,20 +90,29 @@ var EADocumentsApp = (function (_super) {
             ],
             "self": "http://localhost:12008"
         };
-        return specialties;
+        var specialty = Utils_1.Utils.convertToSpecialty(specialties);
+        for (var item in specialty.children) {
+            navNodes.push(specialty.children[item]);
+        }
+        navNodes.push(specialty);
+        console.log(specialty);
+        var returnType = specialties;
+        console.log(returnType);
+        return returnType;
     };
     EADocumentsApp.prototype.componentDidMount = function () {
         console.log('did mount');
-        var items = this.getNavNodes();
-        console.log(items.length);
+        var items = this.getSpecialties(null);
+        if (items != null && items.children != null) {
+            console.log(items.children.length);
+        }
+        var component = this;
         this.setState({
-            menuItems: items
+            menuItems: items.children
         });
     };
     EADocumentsApp.prototype.handleMenuClick = function (event) {
-        var link = event.target;
         console.log('Bubble for menu in app!');
-        console.log(link);
         console.log(event);
     };
     EADocumentsApp.prototype.render = function () {

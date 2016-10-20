@@ -1,3 +1,5 @@
+/// <reference path="./interfaces.d.ts"/>
+
 
 class Utils {
 
@@ -29,6 +31,16 @@ class Utils {
 
     var store = localStorage.getItem(namespace);
     return (store && JSON.parse(store)) || [];
+  }
+
+  public static convertToSpecialty(specialty: ISpecialty) {
+
+      for (let item in specialty.children) {
+        specialty.children[item] = <ISpecialty>specialty.children[item];
+      }
+        
+      return specialty;
+
   }
 
   public static extend(...objs : any[]) : any {

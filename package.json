@@ -1,18 +1,28 @@
 {
   "private": true,
   "dependencies": {
+    "axios": "^0.15.0",
     "classnames": "^2.1.5",
     "director": "^1.2.0",
     "jquery": "^3.1.1",
-    "react": "^0.13.3"
+    "livereload": "^0.6.0",
+    "react": "^0.13.3",
+    "react-dom": "^15.3.2",
+    "react-modal": "^1.5.2"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-jshint": "^2.0.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-serve": "^1.4.0",
     "gulp-typescript": "^3.0.2",
     "gulp-uglify": "^2.0.0",
+    "gulp-watch": "^4.3.10",
+    "gulp-webserver": "^0.9.1",
     "jshint": "^2.9.3",
     "tsify": "^1.0.7",
     "typescript": "^2.0.3",

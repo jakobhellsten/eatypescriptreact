@@ -19,8 +19,8 @@ var DocumentList = (function (_super) {
     DocumentList.prototype.render = function () {
         return (React.createElement("div", null, 
             React.createElement("ul", null, this.props.documents.map(function (item, i) {
-                var boundClick = this.handleListItemClick.bind(this, i);
-                return (React.createElement(DocumentListItem_1.DocumentListItem, {handleOnClick: boundClick, document: item, key: item.id}));
+                var boundClick = this.handleListItemClick.bind(item, i);
+                return (React.createElement(DocumentListItem_1.DocumentListItem, {handleOnClick: boundClick(item.id), document: item, key: item.id}));
             }))
         ));
     };

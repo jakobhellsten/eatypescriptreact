@@ -14,16 +14,12 @@ class DocumentListItem extends React.Component<IDocumentListItemProps, any> {
   constructor(props : IDocumentListItemProps){
     super(props);
   }
-  
-  public handleOnClick(event) {
-    var link : any = event.target;
-  }
 
-  public render() {
-    return (
+
+  public render() {    
+    return (      
       <li>
-        <a onClick={e => this.props.handleOnClick(e)}
-        />
+        Klicka<a onClick={e => this.props.handleOnClick(e)}>document title = {this.props.document.title}</a>Öppna<a onClick={e => this.props.handleModalOpen(this.props.document)}>Open item properties</a>
       </li>
     );
   }

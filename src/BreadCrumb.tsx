@@ -33,6 +33,7 @@ class BreadCrumb extends React.Component<INavigationProps, IBreadCrumbState> {
       //nextProps.editing !== this.props.editing ||
       nextState.editText !== this.state.editText
     );*/
+    return true;
   }
 
   /**
@@ -41,38 +42,42 @@ class BreadCrumb extends React.Component<INavigationProps, IBreadCrumbState> {
    * For more info refer to notes at https://facebook.github.io/react/docs/component-api.html#setstate
    * and https://facebook.github.io/react/docs/component-specs.html#updating-componentdidupdate
    */
-  public componentDidUpdate(prevProps : INavigationItemProps) {
+  //public componentDidUpdate(prevProps : INavigationItemProps) {
     /*if (!prevProps.editing && this.props.editing) {
       var node = React.findDOMNode<HTMLInputElement>(this.refs["editField"]);
       node.focus();
       node.setSelectionRange(node.value.length, node.value.length);
     }*/
-  }
+  //}
 
-  public handleBreadCrumbItemClick(event) {
-        var link : any = event.target;
+  public handleBreadCrumbItemClick(clickedId) {
+        console.log('In bread crumb click');
+        console.log(clickedId)
+        this.props.handleOnClick(clickedId);
     }
 
   public render() {
     
     //var boundOnClick = handleBreadCrumbItemClick;
     //var breadCrumbItem = <BreadCrumbItem id="testId" title="TestTitle"  />;
-
-    return (
-          <div>
-            <ul>
-              {this.props.menuItems.map(function(item, i){
-                var boundClick = this.handleBreadCrumbItemClick.bind(this, i);
-                return (
-                  <BreadCrumbItem key="{item.id}" title="{item.title}" handleOnClick={boundClick} />
-                )
-              })}
-            </ul>
-        </div>
-                         
-    );
+    if(this.props.currentSpecialty != null) // only render if any items
+    {
+        
+        return (
+              <div>
+                BreadCrumb
+                <ul>
+              {this.props.menuItems.map(function(item){
+                    var boundClick = this.handleBreadCrumbItemClick.bind(this);
+                    return (                  
+                    <BreadCrumbItem key={item.id} id={item.id} title={item.title} handleOnClick={boundClick} />   
+                    )             
+                }.bind(this))}
+              </ul>
+            </div>                            
+        );
+    }
   }
-
 }
 
 export { BreadCrumb };

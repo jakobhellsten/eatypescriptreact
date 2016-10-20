@@ -9,6 +9,10 @@ var jshint = require('gulp-jshint');
 var gulp   = require('gulp');
 var clean = require('gulp-clean');
 var tsProject = ts.createProject('tsconfig.json');
+var plumber = require('gulp-plumber');
+var livereload = require('gulp-livereload');
+var serve = require('gulp-serve');
+var webserver = require('gulp-webserver');
 
 var paths = {
     source: "./src/",
@@ -34,8 +38,7 @@ var build = {
             scripts: paths.source + "scripts/**/*.js",
             scriptsMin: paths.source + "scripts/**/*.min.js",
             vendor_js: [
-                'react',
-                'jquery'
+                'react'                
             ],
             extern_js: [
                 'node_modules/q/q.js',
@@ -76,7 +79,7 @@ var build = {
 
 gulp.task('through', function () {
 	return gulp
-    .src(['index.html'])
+    .src(['index.html', 'src/styles/index.css'])
     .pipe(gulp.dest(paths.output));
 });
 
@@ -90,8 +93,6 @@ gulp.task('clean-build', function () {
     .pipe(clean());
 });
  
-
-
 gulp.task('compile', function () {
   var result = gulp.src(paths.source + '**/*{ts,tsx}')
     .pipe(tsProject());
@@ -127,4 +128,50 @@ gulp.task('lint', function() {
   return gulp.src('./src/*.js')
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
+});
+
+gulp.task('reload', function () {
+// Change the filepath, when you want to live reload a different page in your project.
+    livereload.reload("./index.html");
+});
+
+gulp.task('watch', function () {
+    livereload.listen();
+    gulp.watch('./dist/**/*.js', ['reload']);
+});
+
+gulp.task('serve', serve({
+  root: 'dist',
+  port: 8080,
+  middleware: function(req, res) {
+    // custom optional middleware 
+  }
+}));
+
+gulp.task('serve-build', serve(['public', 'build']));
+gulp.task('serve-prod', serve({
+  root: ['public', 'build'],
+  port: 80,
+  middleware: function(req, res) {
+    // custom optional middleware 
+  }
+}));
+
+gulp.task('webserver', function() {
+  gulp.src('dist')
+    .pipe(webserver({
+      livereload: {
+        enable: true, // need this set to true to enable livereload 
+        filter: function(fileName) {
+          if (fileName.match('bundle.js')) { // only look for bundle.js
+            return true;
+          } else {
+            return false;
+          }
+        }
+      },
+      port: 8080,
+      directoryListing: true,
+      open: 'http://localhost:8080/index.html',
+    }));
 });

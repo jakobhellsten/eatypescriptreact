@@ -15,15 +15,34 @@ interface IDocumentModel {
   subscribe(onChange);
 }
 
+interface IOrganization{
+  parentId : string;
+  id : string;
+  title : string;
+  children : Array<IOrganization>;
+}
+
+interface ISpecialty{
+  parentId : string;
+  id : string;
+  title : string;
+  isTermInUse : boolean;
+  hasUsedChildNodes : boolean;
+  children : Array<ISpecialty>;
+}
+
+
 interface IMenuModel {
   
 }
 
+//Abstraction for specialties and organizations when it comes to rendering menus
 interface IMenuItem{
   id : string;
   title : string;
 }
 
+//Abstraction for specialties and organizations when it comes to rendering menus
 interface INavigationItem{
   id : string;
   title : string;
@@ -40,37 +59,53 @@ interface IDocumentProps {
 
 interface IDocumentListProps {
   documents : Array<IDocument>;
+  handleDocumentProperties : any;
 }
 
 interface IDocumentListItemProps{
   key : string;
   handleOnClick : any;
+  handleModalOpen : any;
   //subscribe(onClick); 
   document : IDocument;
 }
 
 interface INavigationProps {
   menuItems : Array<IMenuItem>;
+  currentSpecialty : ISpecialty;
   handleOnClick : any;  
 }
 
 interface INavigationItemProps {
+  id : string;
   key : string;  
   title : string;
   //navigationItem : INavigationItem;
   handleOnClick : any;
 }
 
+interface IModalProps{
+  isOpen? : boolean;
+  style? : string;
+  bg? : string;
+  handleOnClose : any;  
+}
+
 interface IAppState {
   updating? : boolean;
-  currentOrganization? : string;
-  currentSpecialty? : string;
+  currentOrganizationId? : string;
+  currentSpecialtyId? : string;
+  currentSpecialty? : ISpecialty;
+  currentOrganization? : IOrganization;
   menuItems? : Array<IMenuItem>;
   documents? : Array<IDocument>;
+  activeBreadCrumbs? : Array<IMenuItem>;
+  isModalOpen? : boolean;
 }
 
 interface IDocumentListState {
   updating? : boolean;
+  isModalOpen : boolean;
 }
 
 interface IDocumentListItemState {
